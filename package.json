@@ -1,0 +1,32 @@
+{
+  "name": "record-screen",
+  "version": "0.0.0",
+  "title": "Record Screen",
+  "description": "Screen recording function using ffmpeg x11grab.",
+  "keywords": [
+    "record",
+    "screen",
+    "ffmpeg",
+    "x11grab"
+  ],
+  "homepage": "https://github.com/blueimp/record-screen",
+  "author": {
+    "name": "Sebastian Tschan",
+    "url": "https://blueimp.net"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/blueimp/record-screen.git"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "scripts": {
+    "test": "docker-compose run --rm record-screen",
+    "posttest": "docker-compose down",
+    "preversion": "npm test",
+    "postversion": "git push --tags origin HEAD && npm publish"
+  },
+  "main": "index.js"
+}

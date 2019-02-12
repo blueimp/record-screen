@@ -1,0 +1,19 @@
+version: '3.7'
+services:
+  chromedriver:
+    image: blueimp/chromedriver
+    init: true
+    environment:
+      - EXPOSE_X11=true
+  record-screen:
+    build: .
+    working_dir: /opt/record-screen
+    entrypoint:
+      - ./wait-for.sh
+      - chromedriver:6000
+      - --
+    command: ./test.js
+    depends_on:
+      - chromedriver
+    volumes:
+      - .:/opt/record-screen
