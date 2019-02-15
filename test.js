@@ -45,6 +45,31 @@ async function testRecording(videoFile, recordingOptions, recordingLength) {
     })
   }
   fs.unlinkSync(videoFile)
+  assert.rejects(
+    recordScreen(videoFile, {
+      resolution: 'invalid'
+    }).promise
+  )
+  assert.rejects(
+    recordScreen(videoFile, {
+      fps: 'invalid'
+    }).promise
+  )
+  assert.rejects(
+    recordScreen(videoFile, {
+      hostname: 'invalid'
+    }).promise
+  )
+  assert.rejects(
+    recordScreen(videoFile, {
+      display: 'invalid'
+    }).promise
+  )
+  assert.rejects(
+    recordScreen(videoFile, {
+      pixelFormat: 'invalid'
+    }).promise
+  )
 }
 
 testRecording(videoFile, recordingOptions, recordingLength).catch(err => {
