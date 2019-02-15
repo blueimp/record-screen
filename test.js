@@ -25,6 +25,8 @@ async function getVideoLength(videoFile) {
 }
 
 async function testRecording(videoFile, recordingLength) {
+  // Touch the file name to check if the overwrite option works:
+  fs.closeSync(fs.openSync(videoFile, 'w'))
   const recording = recordScreen(videoFile, {
     hostname: 'chromedriver'
   })

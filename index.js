@@ -35,6 +35,9 @@ function recordScreen(fileName, options = {}) {
     process = execFile(
       'ffmpeg',
       [
+        '-y', // Override existing files
+        '-loglevel',
+        'error',
         '-video_size',
         options.resolution || '1440x900', // Must match X11 display resolution
         '-r', // Frames per second to grab from input
@@ -45,9 +48,6 @@ function recordScreen(fileName, options = {}) {
         (options.hostname || '') + ':' + (options.display || '0'),
         '-pix_fmt',
         options.pixelFormat || 'yuv420p', // QuickTime compatibility
-        '-loglevel',
-        'error',
-        '-y', // Override existing files
         fileName
       ],
       function(error, stdout, stderr) {
