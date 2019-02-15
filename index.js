@@ -37,7 +37,7 @@ function recordScreen(fileName, options = {}) {
       [
         '-video_size',
         options.resolution || '1440x900', // Must match X11 display resolution
-        '-framerate',
+        '-r', // Frames per second to grab from input
         options.fps || 15,
         '-f', // Forces input format
         'x11grab', // Use X11 as video input device
