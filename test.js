@@ -5,6 +5,9 @@ const fs = require('fs')
 const execFile = require('util').promisify(require('child_process').execFile)
 const recordScreen = require('.')
 const videoFile = '/tmp/test.mp4'
+const recordingOptions = {
+  hostname: 'chromedriver'
+}
 const recordingLength = 2000
 
 function checkVideoIntegrity(videoFile) {
@@ -24,12 +27,10 @@ async function getVideoLength(videoFile) {
   return Number(result.stdout.trim())
 }
 
-async function testRecording(videoFile, recordingLength) {
+async function testRecording(videoFile, recordingOptions, recordingLength) {
   // Touch the file name to check if the overwrite option works:
   fs.closeSync(fs.openSync(videoFile, 'w'))
-  const recording = recordScreen(videoFile, {
-    hostname: 'chromedriver'
-  })
+  const recording = recordScreen(videoFile, recordingOptions)
   setTimeout(() => recording.stop(), recordingLength)
   await recording.promise
   await checkVideoIntegrity(videoFile)
@@ -46,7 +47,7 @@ async function testRecording(videoFile, recordingLength) {
   fs.unlinkSync(videoFile)
 }
 
-testRecording(videoFile, recordingLength).catch(err => {
+testRecording(videoFile, recordingOptions, recordingLength).catch(err => {
   console.error(err)
   process.exit(1)
 })
