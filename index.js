@@ -37,7 +37,7 @@ function recordScreen(fileName, options = {}) {
       [
         '-y', // Override existing files
         '-loglevel',
-        'error',
+        'fatal', // Only show errors that prevent ffmpeg to continue
         '-video_size',
         options.resolution || '1440x900', // Must match X11 display resolution
         '-r', // Frames per second to grab from input
@@ -51,18 +51,8 @@ function recordScreen(fileName, options = {}) {
         fileName
       ],
       function(error, stdout, stderr) {
-        process = null
-        if (error) {
-          // At the start, the video capture always logs an ignorable x11grab
-          // "image data event_error", which we can safely ignore:
-          const stderrLines = stderr.split('\n')
-          if (
-            stderrLines.length !== 2 ||
-            !/x11grab .* image data event_error/.test(stderrLines[0])
-          ) {
-            return reject(error)
-          }
-        }
+        // ffmpeg returns with status 255 when receiving SIGINT:
+        if (error && !(error.killed && error.code === 255)) return reject(error)
         return resolve({ stdout, stderr })
       }
     )
