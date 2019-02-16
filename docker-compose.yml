@@ -9,9 +9,11 @@ services:
     build: .
     init: true
     command: index.test.js
+    read_only: true
+    tmpfs: /tmp
     environment:
       - WAIT_FOR_HOSTS=chromedriver:6000
     volumes:
-      - .:/opt
+      - .:/opt:ro
     depends_on:
       - chromedriver
