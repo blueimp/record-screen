@@ -1,3 +1,5 @@
+'use strict'
+
 /* global describe, after, it */
 
 const assert = require('assert')
