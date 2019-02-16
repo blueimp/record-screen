@@ -1,6 +1,6 @@
 {
   "name": "record-screen",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "title": "Record Screen",
   "description": "Screen recording function using ffmpeg x11grab.",
   "keywords": [
