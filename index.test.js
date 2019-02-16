@@ -56,7 +56,7 @@ describe('screen recording', function () {
         operator: '>='
       })
     }
-  }).timeout(5000)
+  })
 
   it('should reject invalid options', async function () {
     assert.rejects(
