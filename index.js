@@ -29,9 +29,9 @@ const { execFile } = require('child_process')
  * @property {string} [options.pixelFormat=yuv420p] Output pixel format
  * @returns {ScreenRecording}
  */
-function recordScreen(fileName, options = {}) {
+function recordScreen (fileName, options = {}) {
   let process
-  const promise = new Promise(function(resolve, reject) {
+  const promise = new Promise(function (resolve, reject) {
     process = execFile(
       'ffmpeg',
       [
@@ -50,14 +50,14 @@ function recordScreen(fileName, options = {}) {
         options.pixelFormat || 'yuv420p', // QuickTime compatibility
         fileName
       ],
-      function(error, stdout, stderr) {
+      function (error, stdout, stderr) {
         // ffmpeg returns with status 255 when receiving SIGINT:
         if (error && !(error.killed && error.code === 255)) return reject(error)
         return resolve({ stdout, stderr })
       }
     )
   })
-  function stop() {
+  function stop () {
     if (process) process.kill('SIGINT')
   }
   return {

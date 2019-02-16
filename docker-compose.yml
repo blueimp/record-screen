@@ -5,15 +5,13 @@ services:
     init: true
     environment:
       - EXPOSE_X11=true
-  record-screen:
+  test:
     build: .
-    working_dir: /opt/record-screen
-    entrypoint:
-      - ./wait-for.sh
-      - chromedriver:6000
-      - --
-    command: ./test.js
+    init: true
+    command: index.test.js
+    environment:
+      - WAIT_FOR_HOSTS=chromedriver:6000
+    volumes:
+      - .:/opt
     depends_on:
       - chromedriver
-    volumes:
-      - .:/opt/record-screen
