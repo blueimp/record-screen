@@ -11,9 +11,6 @@ const mochaTimeout = 10000
 const mochaSlow = 5000
 
 const videoFile = '/tmp/test.mp4'
-const recordingOptions = {
-  hostname: 'chromedriver'
-}
 const recordingLength = 2000
 
 function checkVideoIntegrity (videoFile) {
@@ -41,10 +38,174 @@ describe('screen recording', function () {
     fs.unlinkSync(videoFile)
   })
 
-  it('should record screen', async function () {
+  it('uses default options', async function () {
+    const recording = recordScreen(videoFile)
+    const cmd = await recording.promise.catch(error => error.cmd)
+    assert.strictEqual(
+      cmd,
+      'ffmpeg -y -loglevel fatal ' +
+        '-r 15 -f x11grab -i localhost:0 -pix_fmt yuv420p ' +
+        videoFile
+    )
+  })
+
+  it('handles option: inputFormat', async function () {
+    const recording = recordScreen(videoFile, {
+      inputFormat: 'mjpeg'
+    })
+    const cmd = await recording.promise.catch(error => error.cmd)
+    assert.strictEqual(
+      cmd,
+      'ffmpeg -y -loglevel fatal ' +
+        '-r 15 -f mjpeg -i http://localhost:9100 -pix_fmt yuv420p ' +
+        videoFile
+    )
+    const recording2 = recordScreen(videoFile, {
+      inputFormat: null
+    })
+    const cmd2 = await recording2.promise.catch(error => error.cmd)
+    assert.strictEqual(
+      cmd2,
+      'ffmpeg -y -loglevel fatal ' +
+        '-r 15 -i http://localhost:9100 -pix_fmt yuv420p ' +
+        videoFile
+    )
+  })
+
+  it('handles option: resolution', async function () {
+    const recording = recordScreen(videoFile, {
+      resolution: '1440x900'
+    })
+    const cmd = await recording.promise.catch(error => error.cmd)
+    assert.strictEqual(
+      cmd,
+      'ffmpeg -y -loglevel fatal ' +
+        '-video_size 1440x900 -r 15 -f x11grab -i localhost:0 ' +
+        '-pix_fmt yuv420p ' +
+        videoFile
+    )
+  })
+
+  it('handles option: fps', async function () {
+    const recording = recordScreen(videoFile, {
+      fps: 30
+    })
+    const cmd = await recording.promise.catch(error => error.cmd)
+    assert.strictEqual(
+      cmd,
+      'ffmpeg -y -loglevel fatal ' +
+        '-r 30 -f x11grab -i localhost:0 -pix_fmt yuv420p ' +
+        videoFile
+    )
+    const recording2 = recordScreen(videoFile, {
+      fps: null
+    })
+    const cmd2 = await recording2.promise.catch(error => error.cmd)
+    assert.strictEqual(
+      cmd2,
+      'ffmpeg -y -loglevel fatal ' +
+        '-f x11grab -i localhost:0 -pix_fmt yuv420p ' +
+        videoFile
+    )
+  })
+
+  it('handles option: protocol', async function () {
+    const recording = recordScreen(videoFile, {
+      inputFormat: 'mjpeg',
+      protocol: 'https:'
+    })
+    const cmd = await recording.promise.catch(error => error.cmd)
+    assert.strictEqual(
+      cmd,
+      'ffmpeg -y -loglevel fatal ' +
+        '-r 15 -f mjpeg -i https://localhost:9100 -pix_fmt yuv420p ' +
+        videoFile
+    )
+  })
+
+  it('handles option: hostname', async function () {
+    const recording = recordScreen(videoFile, {
+      hostname: '127.0.0.1'
+    })
+    const cmd = await recording.promise.catch(error => error.cmd)
+    assert.strictEqual(
+      cmd,
+      'ffmpeg -y -loglevel fatal ' +
+        '-r 15 -f x11grab -i 127.0.0.1:0 -pix_fmt yuv420p ' +
+        videoFile
+    )
+  })
+
+  it('handles option: port', async function () {
+    const recording = recordScreen(videoFile, {
+      inputFormat: 'mjpeg',
+      port: '8080'
+    })
+    const cmd = await recording.promise.catch(error => error.cmd)
+    assert.strictEqual(
+      cmd,
+      'ffmpeg -y -loglevel fatal ' +
+        '-r 15 -f mjpeg -i http://localhost:8080 -pix_fmt yuv420p ' +
+        videoFile
+    )
+  })
+
+  it('handles option: display', async function () {
+    const recording = recordScreen(videoFile, {
+      display: '0.0+100,100'
+    })
+    const cmd = await recording.promise.catch(error => error.cmd)
+    assert.strictEqual(
+      cmd,
+      'ffmpeg -y -loglevel fatal ' +
+        '-r 15 -f x11grab -i localhost:0.0+100,100 -pix_fmt yuv420p ' +
+        videoFile
+    )
+  })
+
+  it('handles option: videoCodec', async function () {
+    const recording = recordScreen(videoFile, {
+      videoCodec: 'libx264'
+    })
+    const cmd = await recording.promise.catch(error => error.cmd)
+    assert.strictEqual(
+      cmd,
+      'ffmpeg -y -loglevel fatal ' +
+        '-r 15 -f x11grab -i localhost:0 -vcodec libx264 -pix_fmt yuv420p ' +
+        videoFile
+    )
+  })
+
+  it('handles option: pixelFormat', async function () {
+    const recording = recordScreen(videoFile, {
+      pixelFormat: 'yuv444p'
+    })
+    const cmd = await recording.promise.catch(error => error.cmd)
+    assert.strictEqual(
+      cmd,
+      'ffmpeg -y -loglevel fatal ' +
+        '-r 15 -f x11grab -i localhost:0 -pix_fmt yuv444p ' +
+        videoFile
+    )
+    const recording2 = recordScreen(videoFile, {
+      pixelFormat: null
+    })
+    const cmd2 = await recording2.promise.catch(error => error.cmd)
+    assert.strictEqual(
+      cmd2,
+      'ffmpeg -y -loglevel fatal ' +
+        '-r 15 -f x11grab -i localhost:0 ' +
+        videoFile
+    )
+  })
+
+  it('records screen', async function () {
     // Touch the file name to check if the overwrite option works:
     fs.closeSync(fs.openSync(videoFile, 'w'))
-    const recording = recordScreen(videoFile, recordingOptions)
+    const recording = recordScreen(videoFile, {
+      hostname: 'chromedriver',
+      resolution: '1440x900'
+    })
     setTimeout(() => recording.stop(), recordingLength)
     await recording.promise
     await checkVideoIntegrity(videoFile)
@@ -58,33 +219,5 @@ describe('screen recording', function () {
         operator: '>='
       })
     }
-  })
-
-  it('should reject invalid options', async function () {
-    assert.rejects(
-      recordScreen(videoFile, {
-        resolution: 'invalid'
-      }).promise
-    )
-    assert.rejects(
-      recordScreen(videoFile, {
-        fps: 'invalid'
-      }).promise
-    )
-    assert.rejects(
-      recordScreen(videoFile, {
-        hostname: 'invalid'
-      }).promise
-    )
-    assert.rejects(
-      recordScreen(videoFile, {
-        display: 'invalid'
-      }).promise
-    )
-    assert.rejects(
-      recordScreen(videoFile, {
-        pixelFormat: 'invalid'
-      }).promise
-    )
   })
 })
