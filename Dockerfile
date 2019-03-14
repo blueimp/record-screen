@@ -6,7 +6,7 @@ RUN apk --no-cache add \
     ffmpeg \
   && npm install -g \
     npm@latest \
-    mocha@5.2.0 \
+    mocha@6.0.2 \
   # Clean up obsolete files:
   && rm -rf \
     /tmp/* \
