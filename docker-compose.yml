@@ -12,6 +12,7 @@ services:
     read_only: true
     tmpfs: /tmp
     environment:
+      - X11_HOST=chromedriver
       - WAIT_FOR_HOSTS=chromedriver:6000
     volumes:
       - .:/opt:ro

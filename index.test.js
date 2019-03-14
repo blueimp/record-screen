@@ -203,7 +203,7 @@ describe('screen recording', function () {
     // Touch the file name to check if the overwrite option works:
     fs.closeSync(fs.openSync(videoFile, 'w'))
     const recording = recordScreen(videoFile, {
-      hostname: 'chromedriver',
+      hostname: process.env.X11_HOST,
       resolution: '1440x900'
     })
     setTimeout(() => recording.stop(), recordingLength)
