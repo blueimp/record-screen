@@ -14,6 +14,46 @@
 const { execFile } = require('child_process')
 
 /**
+ * Builds arguments for the ffmpeg call.
+ * @param {string} fileName Output file name
+ * @param {Object} options Screen recording options
+ * @returns {Array}
+ */
+function buildFFMPEGArgs (fileName, options) {
+  const args = [
+    '-y', // Override existing files
+    '-loglevel',
+    'fatal' // Only show errors that prevent ffmpeg to continue
+  ]
+  if (options.resolution) {
+    // Must match X11 display resolution when using x11grab:
+    args.push('-video_size', options.resolution)
+  }
+  if (options.fps) {
+    // Frames per second to record from input:
+    args.push('-r', options.fps)
+  }
+  if (options.inputFormat) {
+    args.push('-f', options.inputFormat)
+  }
+  args.push(
+    '-i',
+    // Construct the input URL:
+    options.inputFormat === 'x11grab'
+      ? `${options.hostname}:${options.display}`
+      : `${options.protocol}//${options.hostname}:${options.port}`
+  )
+  if (options.videoCodec) {
+    args.push('-vcodec', options.videoCodec)
+  }
+  if (options.pixelFormat) {
+    args.push('-pix_fmt', options.pixelFormat)
+  }
+  args.push(fileName)
+  return args
+}
+
+/**
  * @typedef {Object} ScreenRecording
  * @property {Promise} promise Promise object for the active screen recording
  * @property {function} stop Function to stop the screen recording
@@ -35,63 +75,35 @@ const { execFile } = require('child_process')
  * @returns {ScreenRecording}
  */
 function recordScreen (fileName, options) {
-  const opts = Object.assign(
-    {
-      inputFormat: 'x11grab',
-      fps: 15,
-      protocol: 'http:',
-      hostname: 'localhost',
-      port: 9100,
-      display: '0',
-      pixelFormat: 'yuv420p' // QuickTime compatibility
-    },
-    options
+  const args = buildFFMPEGArgs(
+    fileName,
+    Object.assign(
+      {
+        inputFormat: 'x11grab',
+        fps: 15,
+        protocol: 'http:',
+        hostname: 'localhost',
+        port: 9100,
+        display: '0',
+        pixelFormat: 'yuv420p' // QuickTime compatibility
+      },
+      options
+    )
   )
-  const args = [
-    '-y', // Override existing files
-    '-loglevel',
-    'fatal' // Only show errors that prevent ffmpeg to continue
-  ]
-  if (opts.resolution) {
-    // Must match X11 display resolution when using x11grab:
-    args.push('-video_size', opts.resolution)
-  }
-  if (opts.fps) {
-    // Frames per second to record from input:
-    args.push('-r', opts.fps)
-  }
-  if (opts.inputFormat) {
-    args.push('-f', opts.inputFormat)
-  }
-  args.push(
-    '-i',
-    // Construct the input URL:
-    opts.inputFormat === 'x11grab'
-      ? `${opts.hostname}:${opts.display}`
-      : `${opts.protocol}//${opts.hostname}:${opts.port}`
-  )
-  if (opts.videoCodec) {
-    args.push('-vcodec', opts.videoCodec)
-  }
-  if (opts.pixelFormat) {
-    args.push('-pix_fmt', opts.pixelFormat)
-  }
-  args.push(fileName)
-  let process
-  const promise = new Promise(function (resolve, reject) {
-    process = execFile('ffmpeg', args, function (error, stdout, stderr) {
+  let recProcess
+  function resolveRecordingProcess (resolve, reject) {
+    recProcess = execFile('ffmpeg', args, function (error, stdout, stderr) {
+      recProcess = null
       // ffmpeg returns with status 255 when receiving SIGINT:
       if (error && !(error.killed && error.code === 255)) return reject(error)
       return resolve({ stdout, stderr })
     })
-  })
+  }
   function stop () {
-    if (process) process.kill('SIGINT')
+    if (recProcess) recProcess.kill('SIGINT')
   }
-  return {
-    promise,
-    stop
-  }
+  const promise = new Promise(resolveRecordingProcess)
+  return { promise, stop }
 }
 
 module.exports = recordScreen
