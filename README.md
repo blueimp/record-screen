@@ -78,7 +78,7 @@ const defaultOptions = {
   hostname: 'localhost',  // Server hostname
   port: 9100,             // Server port, ignored for x11grab
   display: '0',           // X11 server display, only used for x11grab
-  videoCodec: undefined   // Video codec, defaults to libx264
+  videoCodec: undefined,  // Video codec, defaults to libx264
   pixelFormat: 'yuv420p'  // Output pixel format
 }
 ```
