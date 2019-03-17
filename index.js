@@ -14,12 +14,36 @@
 const { execFile } = require('child_process')
 
 /**
+ * Builds an URL object with the given properties.
+ * @param {Object} [properties] URL properties
+ * @returns {string}
+ */
+function buildURL (properties = {}) {
+  const url = new URL('http://localhost')
+  const keys = [
+    'protocol',
+    'username',
+    'password',
+    'hostname',
+    'port',
+    'pathname',
+    'search'
+  ]
+  for (let i = 0; i < keys.length; i++) {
+    let key = keys[i]
+    let value = properties[key]
+    if (value) url[key] = value
+  }
+  return url.href
+}
+
+/**
  * Builds arguments for the ffmpeg call.
  * @param {string} fileName Output file name
- * @param {Object} options Screen recording options
+ * @param {Object} [options] Screen recording options
  * @returns {Array}
  */
-function buildFFMPEGArgs (fileName, options) {
+function buildFFMPEGArgs (fileName, options = {}) {
   const args = [
     '-y', // Override existing files
     '-loglevel',
@@ -40,8 +64,8 @@ function buildFFMPEGArgs (fileName, options) {
     '-i',
     // Construct the input URL:
     options.inputFormat === 'x11grab'
-      ? `${options.hostname}:${options.display}`
-      : `${options.protocol}//${options.hostname}:${options.port}`
+      ? `${options.hostname || ''}:${options.display}`
+      : buildURL(options)
   )
   if (options.videoCodec) {
     args.push('-vcodec', options.videoCodec)
@@ -64,14 +88,18 @@ function buildFFMPEGArgs (fileName, options) {
  * @param {string} fileName Output file name
  * @param {Object} [options] Screen recording options
  * @property {string} [options.inputFormat=x11grab] Input format
- * @property {string} [options.resolution] Display resolution
- * @property {number} [options.fps=15] Frames per second
- * @property {string} [options.protocol=http:] Server protocol, ignored for X11
- * @property {string} [options.hostname=localhost] Server hostname
- * @property {string} [options.port=9100] Server port, ignored for X11
- * @property {string} [options.display=0] X11 server display
+ * @property {string} [options.resolution] Display resolution (WIDTHxHEIGHT)
+ * @property {number} [options.fps=15] Frames per second to record from input
  * @property {string} [options.videoCodec] Video codec
  * @property {string} [options.pixelFormat=yuv420p] Output pixel format
+ * @property {string} [options.hostname=localhost] Server hostname
+ * @property {string} [options.display=0] X11 server display
+ * @property {string} [options.protocol=http] Server protocol
+ * @property {string} [options.username] URL username
+ * @property {string} [options.password] URL password
+ * @property {number} [options.port=9100] Server port
+ * @property {string} [options.pathname] URL pathname
+ * @property {string} [options.search] URL search
  * @returns {ScreenRecording}
  */
 function recordScreen (fileName, options) {
@@ -81,11 +109,9 @@ function recordScreen (fileName, options) {
       {
         inputFormat: 'x11grab',
         fps: 15,
-        protocol: 'http:',
-        hostname: 'localhost',
-        port: 9100,
+        pixelFormat: 'yuv420p', // QuickTime compatibility
         display: '0',
-        pixelFormat: 'yuv420p' // QuickTime compatibility
+        port: 9100
       },
       options
     )

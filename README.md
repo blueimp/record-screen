@@ -77,15 +77,22 @@ setTimeout(() => recording.stop(), 5000)
 
 ```js
 const defaultOptions = {
+  // shared options:
   inputFormat: 'x11grab', // Input format, use 'mjpeg' to record an MJPEG stream
-  resolution: undefined,  // Display resolution
+  resolution: undefined,  // Display resolution (WIDTHxHEIGHT)
   fps: 15,                // Frames per second to record from input
-  protocol: 'http:',      // Server protocol, ignored for x11grab
+  videoCodec: undefined,  // Video codec, defaults to libx264 for mp4 output
+  pixelFormat: 'yuv420p', // Output pixel format
   hostname: 'localhost',  // Server hostname
-  port: 9100,             // Server port, ignored for x11grab
-  display: '0',           // X11 server display, only used for x11grab
-  videoCodec: undefined,  // Video codec, defaults to libx264
-  pixelFormat: 'yuv420p'  // Output pixel format
+  // x11grab options:
+  display: '0',           // X11 server display
+  // options ignored for x11grab:
+  protocol: 'http',       // Server protocol
+  username: undefined,    // URL username property
+  password: undefined,    // URL password property
+  port: 9100,             // Server port
+  pathname: undefined,    // URL pathname property
+  search: undefined       // URL search property
 }
 ```
 
