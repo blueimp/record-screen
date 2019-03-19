@@ -97,7 +97,7 @@ function buildFFMPEGArgs (fileName, options = {}) {
  * @property {string} [options.protocol=http] Server protocol
  * @property {string} [options.username] URL username
  * @property {string} [options.password] URL password
- * @property {number} [options.port=9100] Server port
+ * @property {number} [options.port=9000] Server port
  * @property {string} [options.pathname] URL pathname
  * @property {string} [options.search] URL search
  * @returns {ScreenRecording}
@@ -111,7 +111,7 @@ function recordScreen (fileName, options) {
         fps: 15,
         pixelFormat: 'yuv420p', // QuickTime compatibility
         display: '0',
-        port: 9100
+        port: 9000
       },
       options
     )

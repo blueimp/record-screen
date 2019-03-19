@@ -57,7 +57,7 @@ describe('screen recording', function () {
     assert.strictEqual(
       cmd,
       'ffmpeg -y -loglevel fatal ' +
-        '-r 15 -f mjpeg -i http://localhost:9100/ -pix_fmt yuv420p ' +
+        '-r 15 -f mjpeg -i http://localhost:9000/ -pix_fmt yuv420p ' +
         videoFile
     )
     const recording2 = recordScreen(videoFile, {
@@ -67,7 +67,7 @@ describe('screen recording', function () {
     assert.strictEqual(
       cmd2,
       'ffmpeg -y -loglevel fatal ' +
-        '-r 15 -i http://localhost:9100/ -pix_fmt yuv420p ' +
+        '-r 15 -i http://localhost:9000/ -pix_fmt yuv420p ' +
         videoFile
     )
   })
@@ -177,7 +177,7 @@ describe('screen recording', function () {
     assert.strictEqual(
       cmd,
       'ffmpeg -y -loglevel fatal ' +
-        '-r 15 -f mjpeg -i https://localhost:9100/ -pix_fmt yuv420p ' +
+        '-r 15 -f mjpeg -i https://localhost:9000/ -pix_fmt yuv420p ' +
         videoFile
     )
   })
@@ -205,7 +205,7 @@ describe('screen recording', function () {
     assert.strictEqual(
       cmd,
       'ffmpeg -y -loglevel fatal ' +
-        '-r 15 -f mjpeg -i http://localhost:9100/mjpeg -pix_fmt yuv420p ' +
+        '-r 15 -f mjpeg -i http://localhost:9000/mjpeg -pix_fmt yuv420p ' +
         videoFile
     )
   })
@@ -219,7 +219,7 @@ describe('screen recording', function () {
     assert.strictEqual(
       cmd,
       'ffmpeg -y -loglevel fatal ' +
-        '-r 15 -f mjpeg -i http://localhost:9100/?key=val -pix_fmt yuv420p ' +
+        '-r 15 -f mjpeg -i http://localhost:9000/?key=val -pix_fmt yuv420p ' +
         videoFile
     )
   })
@@ -233,7 +233,7 @@ describe('screen recording', function () {
     assert.strictEqual(
       cmd,
       'ffmpeg -y -loglevel fatal ' +
-        '-r 15 -f mjpeg -i http://user@localhost:9100/ -pix_fmt yuv420p ' +
+        '-r 15 -f mjpeg -i http://user@localhost:9000/ -pix_fmt yuv420p ' +
         videoFile
     )
   })
@@ -248,7 +248,7 @@ describe('screen recording', function () {
     assert.strictEqual(
       cmd,
       'ffmpeg -y -loglevel fatal ' +
-        '-r 15 -f mjpeg -i http://user:pass@localhost:9100/ -pix_fmt yuv420p ' +
+        '-r 15 -f mjpeg -i http://user:pass@localhost:9000/ -pix_fmt yuv420p ' +
         videoFile
     )
   })

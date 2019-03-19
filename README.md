@@ -55,7 +55,7 @@ Record an MJPEG stream:
 const recordScreen = require('record-screen')
 
 const recording = recordScreen('/tmp/test.mp4', {
-  inputFormat: 'mjpeg' // Record an MJPEG stream, defaults to port 9100
+  inputFormat: 'mjpeg' // Record an MJPEG stream, defaults to port 9000
 })
 
 recording.promise
@@ -90,7 +90,7 @@ const defaultOptions = {
   protocol: 'http',       // Server protocol
   username: undefined,    // URL username property
   password: undefined,    // URL password property
-  port: 9100,             // Server port
+  port: 9000,             // Server port
   pathname: undefined,    // URL pathname property
   search: undefined       // URL search property
 }
