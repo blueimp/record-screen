@@ -3,18 +3,39 @@ services:
   chromedriver:
     image: blueimp/chromedriver
     init: true
+    tmpfs: /tmp
     environment:
       - EXPOSE_X11=true
+  mjpeg:
+    build: .
+    init: true
+    command: >
+      mjpeg-server -- ffmpeg
+        -loglevel fatal
+        -probesize 32
+        -fpsprobesize 0
+        -analyzeduration 0
+        -fflags nobuffer
+        -f x11grab
+        -r 15
+        -video_size 1440x900
+        -i chromedriver:0
+        -f mpjpeg
+        -q 7
+        '-'
+    read_only: true
   test:
     build: .
     init: true
-    command: index.test.js
+    command: mocha index.test.js
     read_only: true
     tmpfs: /tmp
     environment:
       - X11_HOST=chromedriver
-      - WAIT_FOR_HOSTS=chromedriver:6000
+      - MJPEG_HOST=mjpeg
+      - WAIT_FOR_HOSTS=chromedriver:6000 mjpeg:9000
     volumes:
       - .:/opt:ro
     depends_on:
       - chromedriver
+      - mjpeg

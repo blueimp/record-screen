@@ -268,7 +268,7 @@ describe('screen recording', function () {
     )
   })
 
-  it('records screen', async function () {
+  it('records screen: x11grab', async function () {
     // Touch the file name to check if the overwrite option works:
     fs.closeSync(fs.openSync(videoFile, 'w'))
     const recording = recordScreen(videoFile, {
@@ -276,6 +276,28 @@ describe('screen recording', function () {
       resolution: '1440x900'
     })
     setTimeout(() => recording.stop(), recordingLength)
+    await recording.promise
+    await checkVideoIntegrity(videoFile)
+    const videoLength = await getVideoLength(videoFile)
+    const expectedLength = recordingLength / 1000
+    if (!(videoLength >= expectedLength)) {
+      throw new assert.AssertionError({
+        message: 'Recording does not have the expected length.',
+        actual: videoLength,
+        expected: expectedLength,
+        operator: '>='
+      })
+    }
+  })
+
+  it('records screen: mjpeg', async function () {
+    // Touch the file name to check if the overwrite option works:
+    fs.closeSync(fs.openSync(videoFile, 'w'))
+    const recording = recordScreen(videoFile, {
+      hostname: process.env.MJPEG_HOST,
+      inputFormat: 'mjpeg'
+    })
+    setTimeout(() => recording.stop(), recordingLength + 200)
     await recording.promise
     await checkVideoIntegrity(videoFile)
     const videoLength = await getVideoLength(videoFile)
