@@ -44,11 +44,10 @@ function buildURL (properties = {}) {
  * @returns {Array}
  */
 function buildFFMPEGArgs (fileName, options = {}) {
-  const args = [
-    '-y', // Override existing files
-    '-loglevel',
-    'fatal' // Only show errors that prevent ffmpeg to continue
-  ]
+  const args = ['-y'] // Override existing files
+  if (options.loglevel) {
+    args.push('-loglevel', options.loglevel)
+  }
   if (options.resolution) {
     // Must match X11 display resolution when using x11grab:
     args.push('-video_size', options.resolution)
@@ -87,6 +86,7 @@ function buildFFMPEGArgs (fileName, options = {}) {
  * Starts a screen recording via ffmpeg x11grab.
  * @param {string} fileName Output file name
  * @param {Object} [options] Screen recording options
+ * @property {string} [options.loglevel=fatal] Log verbosity level
  * @property {string} [options.inputFormat=x11grab] Input format
  * @property {string} [options.resolution] Display resolution (WIDTHxHEIGHT)
  * @property {number} [options.fps=15] Frames per second to record from input
@@ -107,6 +107,7 @@ function recordScreen (fileName, options) {
     fileName,
     Object.assign(
       {
+        loglevel: 'fatal', // Only show errors that prevent ffmpeg to continue
         inputFormat: 'x11grab',
         fps: 15,
         pixelFormat: 'yuv420p', // QuickTime compatibility
