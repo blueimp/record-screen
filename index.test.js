@@ -43,8 +43,7 @@ describe('screen recording', function () {
     const cmd = await recording.promise.catch(error => error.cmd)
     assert.strictEqual(
       cmd,
-      'ffmpeg -y -loglevel fatal -r 15 -f x11grab -i :0 -pix_fmt yuv420p ' +
-        videoFile
+      'ffmpeg -y -r 15 -f x11grab -i :0 -pix_fmt yuv420p ' + videoFile
     )
   })
 
@@ -75,8 +74,7 @@ describe('screen recording', function () {
     const cmd = await recording.promise.catch(error => error.cmd)
     assert.strictEqual(
       cmd,
-      'ffmpeg -y -loglevel fatal ' +
-        '-r 15 -f mjpeg -i http://localhost:9000/ -pix_fmt yuv420p ' +
+      'ffmpeg -y -r 15 -f mjpeg -i http://localhost:9000/ -pix_fmt yuv420p ' +
         videoFile
     )
     const recording2 = recordScreen(videoFile, {
@@ -85,9 +83,7 @@ describe('screen recording', function () {
     const cmd2 = await recording2.promise.catch(error => error.cmd)
     assert.strictEqual(
       cmd2,
-      'ffmpeg -y -loglevel fatal ' +
-        '-r 15 -i http://localhost:9000/ -pix_fmt yuv420p ' +
-        videoFile
+      'ffmpeg -y -r 15 -i http://localhost:9000/ -pix_fmt yuv420p ' + videoFile
     )
   })
 
@@ -98,7 +94,7 @@ describe('screen recording', function () {
     const cmd = await recording.promise.catch(error => error.cmd)
     assert.strictEqual(
       cmd,
-      'ffmpeg -y -loglevel fatal ' +
+      'ffmpeg -y ' +
         '-video_size 1440x900 -r 15 -f x11grab -i :0 -pix_fmt yuv420p ' +
         videoFile
     )
@@ -111,8 +107,7 @@ describe('screen recording', function () {
     const cmd = await recording.promise.catch(error => error.cmd)
     assert.strictEqual(
       cmd,
-      'ffmpeg -y -loglevel fatal -r 30 -f x11grab -i :0 -pix_fmt yuv420p ' +
-        videoFile
+      'ffmpeg -y -r 30 -f x11grab -i :0 -pix_fmt yuv420p ' + videoFile
     )
     const recording2 = recordScreen(videoFile, {
       fps: null
@@ -120,7 +115,7 @@ describe('screen recording', function () {
     const cmd2 = await recording2.promise.catch(error => error.cmd)
     assert.strictEqual(
       cmd2,
-      'ffmpeg -y -loglevel fatal -f x11grab -i :0 -pix_fmt yuv420p ' + videoFile
+      'ffmpeg -y -f x11grab -i :0 -pix_fmt yuv420p ' + videoFile
     )
   })
 
@@ -131,8 +126,7 @@ describe('screen recording', function () {
     const cmd = await recording.promise.catch(error => error.cmd)
     assert.strictEqual(
       cmd,
-      'ffmpeg -y -loglevel fatal ' +
-        '-r 15 -f x11grab -i :0 -vcodec libx264 -pix_fmt yuv420p ' +
+      'ffmpeg -y -r 15 -f x11grab -i :0 -vcodec libx264 -pix_fmt yuv420p ' +
         videoFile
     )
   })
@@ -144,8 +138,7 @@ describe('screen recording', function () {
     const cmd = await recording.promise.catch(error => error.cmd)
     assert.strictEqual(
       cmd,
-      'ffmpeg -y -loglevel fatal -r 15 -f x11grab -i :0 -pix_fmt yuv444p ' +
-        videoFile
+      'ffmpeg -y -r 15 -f x11grab -i :0 -pix_fmt yuv444p ' + videoFile
     )
     const recording2 = recordScreen(videoFile, {
       pixelFormat: null
@@ -153,7 +146,7 @@ describe('screen recording', function () {
     const cmd2 = await recording2.promise.catch(error => error.cmd)
     assert.strictEqual(
       cmd2,
-      'ffmpeg -y -loglevel fatal ' + '-r 15 -f x11grab -i :0 ' + videoFile
+      'ffmpeg -y ' + '-r 15 -f x11grab -i :0 ' + videoFile
     )
   })
 
@@ -164,9 +157,7 @@ describe('screen recording', function () {
     const cmd = await recording.promise.catch(error => error.cmd)
     assert.strictEqual(
       cmd,
-      'ffmpeg -y -loglevel fatal ' +
-        '-r 15 -f x11grab -i 127.0.0.1:0 -pix_fmt yuv420p ' +
-        videoFile
+      'ffmpeg -y -r 15 -f x11grab -i 127.0.0.1:0 -pix_fmt yuv420p ' + videoFile
     )
   })
 
@@ -177,9 +168,7 @@ describe('screen recording', function () {
     const cmd = await recording.promise.catch(error => error.cmd)
     assert.strictEqual(
       cmd,
-      'ffmpeg -y -loglevel fatal ' +
-        '-r 15 -f x11grab -i :0.0+100,100 -pix_fmt yuv420p ' +
-        videoFile
+      'ffmpeg -y -r 15 -f x11grab -i :0.0+100,100 -pix_fmt yuv420p ' + videoFile
     )
   })
 
@@ -191,8 +180,7 @@ describe('screen recording', function () {
     const cmd = await recording.promise.catch(error => error.cmd)
     assert.strictEqual(
       cmd,
-      'ffmpeg -y -loglevel fatal ' +
-        '-r 15 -f mjpeg -i https://localhost:9000/ -pix_fmt yuv420p ' +
+      'ffmpeg -y -r 15 -f mjpeg -i https://localhost:9000/ -pix_fmt yuv420p ' +
         videoFile
     )
   })
@@ -205,8 +193,7 @@ describe('screen recording', function () {
     const cmd = await recording.promise.catch(error => error.cmd)
     assert.strictEqual(
       cmd,
-      'ffmpeg -y -loglevel fatal ' +
-        '-r 15 -f mjpeg -i http://localhost:8080/ -pix_fmt yuv420p ' +
+      'ffmpeg -y -r 15 -f mjpeg -i http://localhost:8080/ -pix_fmt yuv420p ' +
         videoFile
     )
   })
@@ -219,7 +206,7 @@ describe('screen recording', function () {
     const cmd = await recording.promise.catch(error => error.cmd)
     assert.strictEqual(
       cmd,
-      'ffmpeg -y -loglevel fatal ' +
+      'ffmpeg -y ' +
         '-r 15 -f mjpeg -i http://localhost:9000/mjpeg -pix_fmt yuv420p ' +
         videoFile
     )
@@ -233,7 +220,7 @@ describe('screen recording', function () {
     const cmd = await recording.promise.catch(error => error.cmd)
     assert.strictEqual(
       cmd,
-      'ffmpeg -y -loglevel fatal ' +
+      'ffmpeg -y ' +
         '-r 15 -f mjpeg -i http://localhost:9000/?key=val -pix_fmt yuv420p ' +
         videoFile
     )
@@ -247,7 +234,7 @@ describe('screen recording', function () {
     const cmd = await recording.promise.catch(error => error.cmd)
     assert.strictEqual(
       cmd,
-      'ffmpeg -y -loglevel fatal ' +
+      'ffmpeg -y ' +
         '-r 15 -f mjpeg -i http://user@localhost:9000/ -pix_fmt yuv420p ' +
         videoFile
     )
@@ -262,7 +249,7 @@ describe('screen recording', function () {
     const cmd = await recording.promise.catch(error => error.cmd)
     assert.strictEqual(
       cmd,
-      'ffmpeg -y -loglevel fatal ' +
+      'ffmpeg -y ' +
         '-r 15 -f mjpeg -i http://user:pass@localhost:9000/ -pix_fmt yuv420p ' +
         videoFile
     )

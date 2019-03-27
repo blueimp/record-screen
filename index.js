@@ -107,7 +107,6 @@ function recordScreen (fileName, options) {
     fileName,
     Object.assign(
       {
-        loglevel: 'fatal', // Only show errors that prevent ffmpeg to continue
         inputFormat: 'x11grab',
         fps: 15,
         pixelFormat: 'yuv420p', // QuickTime compatibility

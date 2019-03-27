@@ -78,7 +78,7 @@ setTimeout(() => recording.stop(), 5000)
 ```js
 const defaultOptions = {
   // shared options:
-  loglevel: 'fatal',      // Only show errors that prevent ffmpeg to continue
+  loglevel: undefined,    // Log level, defaults to "info"
   inputFormat: 'x11grab', // Input format, use 'mjpeg' to record an MJPEG stream
   resolution: undefined,  // Display resolution (WIDTHxHEIGHT)
   fps: 15,                // Frames per second to record from input
