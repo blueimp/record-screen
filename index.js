@@ -11,7 +11,10 @@
  * https://opensource.org/licenses/MIT
  */
 
+const fs = require('fs')
+const util = require('util')
 const { execFile } = require('child_process')
+const execFilePromise = util.promisify(execFile)
 
 /**
  * Builds an URL object with the given properties.
@@ -128,7 +131,33 @@ function recordScreen (fileName, options) {
   function stop () {
     if (recProcess) recProcess.kill('SIGINT')
   }
-  const promise = new Promise(resolveRecordingProcess)
+  function setMetadata (result) {
+    if (!options.rotate) return result
+    // Metadata cannot be set when encoding, as the FFmpeg MP4 muxer has a bug
+    // that prevents changing metadata: https://trac.ffmpeg.org/ticket/6370
+    // So we set the metadata in a separate command execution:
+    const tmpFileName = fileName.replace(/[^.]+$/, 'tmp.$&')
+    const args = [
+      '-y',
+      '-loglevel',
+      'error',
+      '-i',
+      fileName,
+      '-codec',
+      'copy',
+      '-map_metadata',
+      '0',
+      '-metadata:s:v',
+      'rotate=' + options.rotate,
+      tmpFileName
+    ]
+    return execFilePromise('ffmpeg', args).then(function () {
+      fs.unlinkSync(fileName)
+      fs.renameSync(tmpFileName, fileName)
+      return result
+    })
+  }
+  const promise = new Promise(resolveRecordingProcess).then(setMetadata)
   return { promise, stop }
 }
 

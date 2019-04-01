@@ -30,6 +30,19 @@ async function getVideoLength (videoFile) {
   return Number(result.stdout.trim())
 }
 
+async function getRotateMetadata (videoFile) {
+  const result = await execFile('ffprobe', [
+    '-v',
+    'error',
+    '-show_entries',
+    'stream_tags=rotate',
+    '-of',
+    'default=noprint_wrappers=1:nokey=1',
+    videoFile
+  ])
+  return Number(result.stdout.trim())
+}
+
 describe('screen recording', function () {
   this.timeout(mochaTimeout)
   this.slow(mochaSlow)
@@ -297,5 +310,29 @@ describe('screen recording', function () {
         operator: '>='
       })
     }
+  })
+
+  it('sets metadata: rotate', async function () {
+    const recording = recordScreen(videoFile, {
+      hostname: process.env.X11_HOST,
+      resolution: '1440x900',
+      rotate: 90
+    })
+    setTimeout(() => recording.stop(), recordingLength)
+    await recording.promise
+    await checkVideoIntegrity(videoFile)
+    const videoLength = await getVideoLength(videoFile)
+    const expectedLength = recordingLength / 1000
+    if (!(videoLength >= expectedLength)) {
+      throw new assert.AssertionError({
+        message: 'Recording does not have the expected length.',
+        actual: videoLength,
+        expected: expectedLength,
+        operator: '>='
+      })
+    }
+    const rotateMetadata = await getRotateMetadata(videoFile)
+    // Rotate metadata is always (360 - options.rotate):
+    assert.strictEqual(360 - 90, rotateMetadata)
   })
 })

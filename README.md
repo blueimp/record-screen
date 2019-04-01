@@ -84,6 +84,7 @@ const defaultOptions = {
   fps: 15,                // Frames per second to record from input
   videoCodec: undefined,  // Video codec, defaults to libx264 for mp4 output
   pixelFormat: 'yuv420p', // Output pixel format
+  rotate: undefined,      // Rotate metadata, set to 90 to rotate left by 90°
   hostname: 'localhost',  // Server hostname
   // x11grab options:
   display: '0',           // X11 server display
