@@ -21,5 +21,5 @@ RUN apk --no-cache add \
     /root/.npm
 USER nobody
 WORKDIR /opt
-COPY wait-for.sh /usr/local/bin/wait-for
-ENTRYPOINT ["wait-for", "--"]
+COPY wait-for-hosts.sh /usr/local/bin/wait-for-hosts
+ENTRYPOINT ["wait-for-hosts", "--"]
