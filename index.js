@@ -94,7 +94,7 @@ function buildFFMPEGArgs (fileName, options = {}) {
 
 /**
  * @typedef {Object} Options Screen recording options
- * @property {string} [loglevel=fatal] Log verbosity level
+ * @property {string} [loglevel=info] Log verbosity level
  * @property {string} [inputFormat=x11grab] Input format
  * @property {string} [resolution] Display resolution (WIDTHxHEIGHT)
  * @property {number} [fps=15] Frames per second to record from input
