@@ -90,11 +90,11 @@ const defaultOptions = {
   display: '0',           // X11 server display
   // options ignored for x11grab:
   protocol: 'http',       // Server protocol
-  username: undefined,    // URL username property
-  password: undefined,    // URL password property
+  username: undefined,    // Basic auth username
+  password: undefined,    // Basic auth password
   port: 9000,             // Server port
-  pathname: undefined,    // URL pathname property
-  search: undefined       // URL search property
+  pathname: undefined,    // URL path component
+  search: undefined       // URL query parameter
 }
 ```
 

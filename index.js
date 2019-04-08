@@ -104,11 +104,11 @@ function buildFFMPEGArgs (fileName, options = {}) {
  * @property {string} [hostname=localhost] Server hostname
  * @property {string} [display=0] X11 server display
  * @property {string} [protocol=http] Server protocol
- * @property {string} [username] URL username
- * @property {string} [password] URL password
+ * @property {string} [username] Basic auth username
+ * @property {string} [password] Basic auth password
  * @property {number} [port=9000] Server port
- * @property {string} [pathname] URL pathname
- * @property {string} [search] URL search
+ * @property {string} [pathname] URL path component
+ * @property {string} [search] URL query parameter
  */
 
 /**
