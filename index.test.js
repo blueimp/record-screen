@@ -1,3 +1,4 @@
+// @ts-check
 'use strict'
 
 /* global describe, after, it */

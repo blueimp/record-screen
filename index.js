@@ -1,5 +1,3 @@
-'use strict'
-
 /*
  * Screen recording function using ffmpeg.
  * Defaults to using x11grab, but also supports other input formats.
@@ -10,6 +8,9 @@
  * Licensed under the MIT license:
  * https://opensource.org/licenses/MIT
  */
+
+// @ts-check
+'use strict'
 
 const fs = require('fs')
 const util = require('util')
@@ -80,30 +81,41 @@ function buildFFMPEGArgs (fileName, options = {}) {
 }
 
 /**
- * @typedef {Object} ScreenRecording
- * @property {Promise} promise Promise object for the active screen recording
+ * @typedef {Object} Result
+ * @property {string} stdout Screen recording standard output
+ * @property {string} stderr Screen recording error output
+ */
+
+/**
+ * @typedef {Object} Recording
+ * @property {Promise<Result>} promise Promise for the active screen recording
  * @property {function} stop Function to stop the screen recording
+ */
+
+/**
+ * @typedef {Object} Options Screen recording options
+ * @property {string} [loglevel=fatal] Log verbosity level
+ * @property {string} [inputFormat=x11grab] Input format
+ * @property {string} [resolution] Display resolution (WIDTHxHEIGHT)
+ * @property {number} [fps=15] Frames per second to record from input
+ * @property {string} [videoCodec] Video codec
+ * @property {string} [pixelFormat=yuv420p] Output pixel format
+ * @property {number} [rotate] Rotate metadata, set to 90 to rotate left by 90°
+ * @property {string} [hostname=localhost] Server hostname
+ * @property {string} [display=0] X11 server display
+ * @property {string} [protocol=http] Server protocol
+ * @property {string} [username] URL username
+ * @property {string} [password] URL password
+ * @property {number} [port=9000] Server port
+ * @property {string} [pathname] URL pathname
+ * @property {string} [search] URL search
  */
 
 /**
  * Starts a screen recording via ffmpeg x11grab.
  * @param {string} fileName Output file name
- * @param {Object} [options] Screen recording options
- * @property {string} [options.loglevel=fatal] Log verbosity level
- * @property {string} [options.inputFormat=x11grab] Input format
- * @property {string} [options.resolution] Display resolution (WIDTHxHEIGHT)
- * @property {number} [options.fps=15] Frames per second to record from input
- * @property {string} [options.videoCodec] Video codec
- * @property {string} [options.pixelFormat=yuv420p] Output pixel format
- * @property {string} [options.hostname=localhost] Server hostname
- * @property {string} [options.display=0] X11 server display
- * @property {string} [options.protocol=http] Server protocol
- * @property {string} [options.username] URL username
- * @property {string} [options.password] URL password
- * @property {number} [options.port=9000] Server port
- * @property {string} [options.pathname] URL pathname
- * @property {string} [options.search] URL search
- * @returns {ScreenRecording}
+ * @param {Options} [options] Screen recording options
+ * @returns {Recording}
  */
 function recordScreen (fileName, options) {
   const args = buildFFMPEGArgs(
