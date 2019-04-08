@@ -45,7 +45,7 @@ function buildURL (properties = {}) {
  * Builds arguments for the ffmpeg call.
  * @param {string} fileName Output file name
  * @param {Object} [options] Screen recording options
- * @returns {Array}
+ * @returns {Array<string>}
  */
 function buildFFMPEGArgs (fileName, options = {}) {
   const args = ['-y'] // Override existing files
@@ -58,7 +58,7 @@ function buildFFMPEGArgs (fileName, options = {}) {
   }
   if (options.fps) {
     // Frames per second to record from input:
-    args.push('-r', options.fps)
+    args.push('-r', String(options.fps))
   }
   if (options.inputFormat) {
     args.push('-f', options.inputFormat)
