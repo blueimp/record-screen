@@ -20,6 +20,13 @@ const execFilePromise = util.promisify(execFile)
 /**
  * Builds an URL object with the given properties.
  * @param {Object} [properties] URL properties
+ * @param {string} [properties.protocol=http] Server protocol
+ * @param {string} [properties.username] Basic auth username
+ * @param {string} [properties.password] Basic auth password
+ * @param {string} [properties.hostname=localhost] Server hostname
+ * @param {number} [properties.port] Server port
+ * @param {string} [properties.pathname] URL path component
+ * @param {string} [properties.search] URL query parameter
  * @returns {string}
  */
 function buildURL (properties = {}) {
@@ -45,6 +52,20 @@ function buildURL (properties = {}) {
  * Builds arguments for the ffmpeg call.
  * @param {string} fileName Output file name
  * @param {Object} [options] Screen recording options
+ * @param {string} [options.loglevel] Log verbosity level
+ * @param {string} [options.inputFormat] Input format
+ * @param {string} [options.resolution] Display resolution (WIDTHxHEIGHT)
+ * @param {number} [options.fps] Frames per second to record from input
+ * @param {string} [options.videoCodec] Video codec
+ * @param {string} [options.pixelFormat] Output pixel format
+ * @param {string} [options.hostname=localhost] Server hostname
+ * @param {string} [options.display] X11 server display
+ * @param {string} [options.protocol=http] Server protocol
+ * @param {string} [options.username] Basic auth username
+ * @param {string} [options.password] Basic auth password
+ * @param {number} [options.port] Server port
+ * @param {string} [options.pathname] URL path component
+ * @param {string} [options.search] URL query parameter
  * @returns {Array<string>}
  */
 function buildFFMPEGArgs (fileName, options = {}) {
