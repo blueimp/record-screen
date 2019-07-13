@@ -41,8 +41,8 @@ function buildURL (properties = {}) {
     'search'
   ]
   for (let i = 0; i < keys.length; i++) {
-    let key = keys[i]
-    let value = properties[key]
+    const key = keys[i]
+    const value = properties[key]
     if (value) url[key] = value
   }
   return url.href
