@@ -8,6 +8,7 @@
   * [x11grab](#x11grab)
   * [mjpeg](#mjpeg)
 - [Options](#options)
+- [Testing](#testing)
 - [License](#license)
 - [Author](#author)
 
@@ -97,6 +98,17 @@ const defaultOptions = {
   search: undefined       // URL query parameter
 }
 ```
+
+## Testing
+1. Start [Docker](https://docs.docker.com/).
+3. Install development dependencies:
+   ```sh
+   npm install
+   ```
+4. Run the tests:
+   ```sh
+   npm test
+   ```
 
 ## License
 Released under the [MIT license](https://opensource.org/licenses/MIT).
