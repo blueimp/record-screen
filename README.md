@@ -1,22 +1,27 @@
 # Record Screen
+
 > Screen recording function using [FFmpeg](https://www.ffmpeg.org/).  
 > Defaults to using `x11grab`, but also supports other input formats.
+
+## Contents
 
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Usage](#usage)
-  * [x11grab](#x11grab)
-  * [mjpeg](#mjpeg)
+  - [x11grab](#x11grab)
+  - [mjpeg](#mjpeg)
 - [Options](#options)
 - [Testing](#testing)
 - [License](#license)
 - [Author](#author)
 
 ## Requirements
+
 This is a thin wrapper around [FFmpeg](https://www.ffmpeg.org/) and has no other
 dependencies.
 
 ## Installation
+
 ```sh
 npm install record-screen
 ```
@@ -24,6 +29,7 @@ npm install record-screen
 ## Usage
 
 ### x11grab
+
 [Desktop screen recording](https://trac.ffmpeg.org/wiki/Capture/Desktop) using
 the `x11grab` input device:
 
@@ -50,6 +56,7 @@ setTimeout(() => recording.stop(), 5000)
 ```
 
 ### mjpeg
+
 Record an MJPEG stream:
 
 ```js
@@ -79,39 +86,42 @@ setTimeout(() => recording.stop(), 5000)
 ```js
 const defaultOptions = {
   // shared options:
-  loglevel: undefined,    // Log level, defaults to "info"
+  loglevel: undefined, // Log level, defaults to "info"
   inputFormat: 'x11grab', // Input format, use 'mjpeg' to record an MJPEG stream
-  resolution: undefined,  // Display resolution (WIDTHxHEIGHT)
-  fps: 15,                // Frames per second to record from input
-  videoCodec: undefined,  // Video codec, defaults to libx264 for mp4 output
+  resolution: undefined, // Display resolution (WIDTHxHEIGHT)
+  fps: 15, // Frames per second to record from input
+  videoCodec: undefined, // Video codec, defaults to libx264 for mp4 output
   pixelFormat: 'yuv420p', // Output pixel format
-  rotate: undefined,      // Rotate metadata, set to 90 to rotate left by 90°
-  hostname: 'localhost',  // Server hostname
+  rotate: undefined, // Rotate metadata, set to 90 to rotate left by 90°
+  hostname: 'localhost', // Server hostname
   // x11grab options:
-  display: '0',           // X11 server display
+  display: '0', // X11 server display
   // options ignored for x11grab:
-  protocol: 'http',       // Server protocol
-  username: undefined,    // Basic auth username
-  password: undefined,    // Basic auth password
-  port: 9000,             // Server port
-  pathname: undefined,    // URL path component
-  search: undefined       // URL query parameter
+  protocol: 'http', // Server protocol
+  username: undefined, // Basic auth username
+  password: undefined, // Basic auth password
+  port: 9000, // Server port
+  pathname: undefined, // URL path component
+  search: undefined // URL query parameter
 }
 ```
 
 ## Testing
+
 1. Start [Docker](https://docs.docker.com/).
-3. Install development dependencies:
+2. Install development dependencies:
    ```sh
    npm install
    ```
-4. Run the tests:
+3. Run the tests:
    ```sh
    npm test
    ```
 
 ## License
+
 Released under the [MIT license](https://opensource.org/licenses/MIT).
 
 ## Author
+
 [Sebastian Tschan](https://blueimp.net/)
