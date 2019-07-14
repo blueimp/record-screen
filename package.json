@@ -21,17 +21,18 @@
   },
   "license": "MIT",
   "engines": {
-    "node": ">=6.0.0"
+    "node": ">=10.0.0"
   },
   "devDependencies": {
     "@types/mocha": "5",
     "@types/node": "12",
     "eslint": "6",
-    "eslint-config-standard": "13",
-    "eslint-plugin-import": "2",
+    "eslint-config-blueimp": "1",
+    "eslint-config-prettier": "6",
+    "eslint-plugin-jsdoc": "15",
     "eslint-plugin-node": "9",
-    "eslint-plugin-promise": "4",
-    "eslint-plugin-standard": "4"
+    "eslint-plugin-prettier": "3",
+    "prettier": "1"
   },
   "scripts": {
     "pretest": "eslint .",

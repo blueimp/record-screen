@@ -1,3 +1,8 @@
 module.exports = {
-  extends: 'standard'
-}
+  extends: [
+    "blueimp",
+    "plugin:jsdoc/recommended",
+    "plugin:node/recommended",
+    "plugin:prettier/recommended"
+  ]
+};

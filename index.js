@@ -18,8 +18,9 @@ const { execFile } = require('child_process')
 const execFilePromise = util.promisify(execFile)
 
 /**
- * Builds an URL object with the given properties.
- * @param {Object} [properties] URL properties
+ * Builds an URL with the given properties.
+ *
+ * @param {object} [properties] URL properties
  * @param {string} [properties.protocol=http] Server protocol
  * @param {string} [properties.username] Basic auth username
  * @param {string} [properties.password] Basic auth password
@@ -27,9 +28,9 @@ const execFilePromise = util.promisify(execFile)
  * @param {number} [properties.port] Server port
  * @param {string} [properties.pathname] URL path component
  * @param {string} [properties.search] URL query parameter
- * @returns {string}
+ * @returns {string} URL
  */
-function buildURL (properties = {}) {
+function buildURL(properties = {}) {
   const url = new URL('http://localhost')
   const keys = [
     'protocol',
@@ -50,8 +51,9 @@ function buildURL (properties = {}) {
 
 /**
  * Builds arguments for the ffmpeg call.
+ *
  * @param {string} fileName Output file name
- * @param {Object} [options] Screen recording options
+ * @param {object} [options] Screen recording options
  * @param {string} [options.loglevel] Log verbosity level
  * @param {string} [options.inputFormat] Input format
  * @param {string} [options.resolution] Display resolution (WIDTHxHEIGHT)
@@ -66,9 +68,9 @@ function buildURL (properties = {}) {
  * @param {number} [options.port] Server port
  * @param {string} [options.pathname] URL path component
  * @param {string} [options.search] URL query parameter
- * @returns {Array<string>}
+ * @returns {Array<string>} ffmpeg arguments list
  */
-function buildFFMPEGArgs (fileName, options = {}) {
+function buildFFMPEGArgs(fileName, options = {}) {
   const args = ['-y'] // Override existing files
   if (options.loglevel) {
     args.push('-loglevel', options.loglevel)
@@ -102,19 +104,19 @@ function buildFFMPEGArgs (fileName, options = {}) {
 }
 
 /**
- * @typedef {Object} Result
+ * @typedef {object} Result
  * @property {string} stdout Screen recording standard output
  * @property {string} stderr Screen recording error output
  */
 
 /**
- * @typedef {Object} Recording
+ * @typedef {object} Recording
  * @property {Promise<Result>} promise Promise for the active screen recording
- * @property {function} stop Function to stop the screen recording
+ * @property {Function} stop Function to stop the screen recording
  */
 
 /**
- * @typedef {Object} Options Screen recording options
+ * @typedef {object} Options Screen recording options
  * @property {string} [loglevel=info] Log verbosity level
  * @property {string} [inputFormat=x11grab] Input format
  * @property {string} [resolution] Display resolution (WIDTHxHEIGHT)
@@ -134,11 +136,12 @@ function buildFFMPEGArgs (fileName, options = {}) {
 
 /**
  * Starts a screen recording via ffmpeg x11grab.
+ *
  * @param {string} fileName Output file name
  * @param {Options} [options] Screen recording options
- * @returns {Recording}
+ * @returns {Recording} Recording object
  */
-function recordScreen (fileName, options) {
+function recordScreen(fileName, options) {
   const args = buildFFMPEGArgs(
     fileName,
     Object.assign(
@@ -153,8 +156,14 @@ function recordScreen (fileName, options) {
     )
   )
   let recProcess
-  function resolveRecordingProcess (resolve, reject) {
-    recProcess = execFile('ffmpeg', args, function (error, stdout, stderr) {
+  /**
+   * Executes the recording process.
+   *
+   * @param {Function} resolve Success callback
+   * @param {Function} reject Failure callback
+   */
+  function recordingExecutor(resolve, reject) {
+    recProcess = execFile('ffmpeg', args, function(error, stdout, stderr) {
       recProcess = null
       // ffmpeg returns with status 255 when receiving SIGINT:
       // @ts-ignore Error interface does not expose killed and code properties
@@ -162,11 +171,20 @@ function recordScreen (fileName, options) {
       return resolve({ stdout, stderr })
     })
   }
-  function stop () {
+  /**
+   * Stops the recording process.
+   */
+  function stop() {
     if (recProcess) recProcess.kill('SIGINT')
   }
-  function setMetadata (result) {
-    if (!options.rotate) return result
+  /**
+   * Sets meta data on the recorded video.
+   *
+   * @param {Result} result Recording result object
+   * @returns {Promise<Result>} Resolves with a recording result object
+   */
+  function setMetadata(result) {
+    if (!options.rotate) return Promise.resolve(result)
     // Metadata cannot be set when encoding, as the FFmpeg MP4 muxer has a bug
     // that prevents changing metadata: https://trac.ffmpeg.org/ticket/6370
     // So we set the metadata in a separate command execution:
@@ -185,13 +203,13 @@ function recordScreen (fileName, options) {
       'rotate=' + options.rotate,
       tmpFileName
     ]
-    return execFilePromise('ffmpeg', args).then(function () {
+    return execFilePromise('ffmpeg', args).then(function() {
       fs.unlinkSync(fileName)
       fs.renameSync(tmpFileName, fileName)
       return result
     })
   }
-  const promise = new Promise(resolveRecordingProcess).then(setMetadata)
+  const promise = new Promise(recordingExecutor).then(setMetadata)
   return { promise, stop }
 }
 
