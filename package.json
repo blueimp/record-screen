@@ -35,6 +35,19 @@
     "prettier": "1",
     "typescript": "3"
   },
+  "eslintConfig": {
+    "extends": [
+      "blueimp",
+      "plugin:jsdoc/recommended",
+      "plugin:node/recommended",
+      "plugin:prettier/recommended"
+    ]
+  },
+  "prettier": {
+    "proseWrap": "always",
+    "semi": false,
+    "singleQuote": true
+  },
   "scripts": {
     "pretest": "eslint . && tsc",
     "test": "docker-compose run --rm test",
@@ -42,5 +55,8 @@
     "preversion": "npm test",
     "postversion": "git push --tags origin HEAD && npm publish"
   },
+  "files": [
+    "index.js"
+  ],
   "main": "index.js"
 }
