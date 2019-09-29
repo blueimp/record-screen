@@ -1,0 +1,23 @@
+name: Test
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10.x
+      - name: docker-compose build
+        run: docker-compose build
+      - name: npm install
+        run: npm install
+        env:
+          CI: true
+      - name: npm test
+        run: npm test
+        env:
+          CI: true
