@@ -24,41 +24,36 @@ function checkVideoIntegrity(videoFile) {
 }
 
 /**
+ * @typedef {object} MetaData Video stream meta data
+ * @property {number} duration Video duration
+ * @property {string} width Video width
+ * @property {string} height Video height
+ * @property {number} rotate Video rotation value
+ */
+
+/**
  * Checks the integrity of the given video file.
  *
  * @param {string} videoFile File path to the video file
- * @returns {Promise<number>} Resolves with the duration (ms) of the video
+ * @returns {Promise<MetaData>} Resolves with the video meta data
  */
-async function getVideoDuration(videoFile) {
+async function getVideoMetaData(videoFile) {
   const result = await execFile('ffprobe', [
     '-v',
     'error',
     '-show_entries',
-    'format=duration',
+    'format=duration:stream=width,height:stream_tags=rotate',
     '-of',
-    'default=noprint_wrappers=1:nokey=1',
+    'json',
     videoFile
   ])
-  return Number(result.stdout.trim())
-}
-
-/**
- * Retrieves the rotate meta data of the given video file.
- *
- * @param {string} videoFile File path to the video file
- * @returns {Promise<number>} Resolves with the rotation number
- */
-async function getRotateMetadata(videoFile) {
-  const result = await execFile('ffprobe', [
-    '-v',
-    'error',
-    '-show_entries',
-    'stream_tags=rotate',
-    '-of',
-    'default=noprint_wrappers=1:nokey=1',
-    videoFile
-  ])
-  return Number(result.stdout.trim())
+  const parsedResult = JSON.parse(result.stdout)
+  return {
+    duration: Number(parsedResult.format.duration),
+    width: parsedResult.streams[0].width,
+    height: parsedResult.streams[0].height,
+    rotate: Number(parsedResult.streams[0].tags.rotate)
+  }
 }
 
 describe('screen recording', function() {
@@ -286,21 +281,31 @@ describe('screen recording', function() {
   it('records screen: x11grab', async function() {
     // Touch the file name to check if the overwrite option works:
     fs.closeSync(fs.openSync(videoFile, 'w'))
-    const recording = recordScreen(videoFile, {
+    const options = {
       hostname: process.env.X11_HOST,
       resolution: '1440x900'
-    })
+    }
+    const recording = recordScreen(videoFile, options)
     setTimeout(() => recording.stop(), recordingDuration)
     await recording.promise
     await checkVideoIntegrity(videoFile)
-    const videoDuration = await getVideoDuration(videoFile)
+    const videoMetaData = await getVideoMetaData(videoFile)
     const expectedDuration = recordingDuration / 1000
-    if (!(videoDuration >= expectedDuration)) {
+    if (!(videoMetaData.duration >= expectedDuration)) {
       throw new assert.AssertionError({
         message: 'Recording does not have the expected length.',
-        actual: videoDuration,
+        actual: videoMetaData.duration,
         expected: expectedDuration,
         operator: '>='
+      })
+    }
+    const resolution = videoMetaData.width + 'x' + videoMetaData.height
+    if (resolution !== options.resolution) {
+      throw new assert.AssertionError({
+        message: 'Recording does not have the expected resolution.',
+        actual: resolution,
+        expected: options.resolution,
+        operator: '==='
       })
     }
   })
@@ -315,14 +320,45 @@ describe('screen recording', function() {
     setTimeout(() => recording.stop(), recordingDuration + 200)
     await recording.promise
     await checkVideoIntegrity(videoFile)
-    const videoDuration = await getVideoDuration(videoFile)
+    const videoMetaData = await getVideoMetaData(videoFile)
     const expectedDuration = recordingDuration / 1000
-    if (!(videoDuration >= expectedDuration)) {
+    if (!(videoMetaData.duration >= expectedDuration)) {
       throw new assert.AssertionError({
         message: 'Recording does not have the expected length.',
-        actual: videoDuration,
+        actual: videoMetaData.duration,
         expected: expectedDuration,
         operator: '>='
+      })
+    }
+  })
+
+  it('uses filter: crop', async function() {
+    const recording = recordScreen(videoFile, {
+      hostname: process.env.X11_HOST,
+      resolution: '1440x900',
+      // See https://ffmpeg.org/ffmpeg-filters.html#crop
+      videoFilter: 'crop=480:300:960:600'
+    })
+    setTimeout(() => recording.stop(), recordingDuration)
+    await recording.promise
+    await checkVideoIntegrity(videoFile)
+    const videoMetaData = await getVideoMetaData(videoFile)
+    const expectedDuration = recordingDuration / 1000
+    if (!(videoMetaData.duration >= expectedDuration)) {
+      throw new assert.AssertionError({
+        message: 'Recording does not have the expected length.',
+        actual: videoMetaData.duration,
+        expected: expectedDuration,
+        operator: '>='
+      })
+    }
+    const resolution = videoMetaData.width + 'x' + videoMetaData.height
+    if (resolution !== '480x300') {
+      throw new assert.AssertionError({
+        message: 'Recording does not have the expected resolution.',
+        actual: resolution,
+        expected: '480x300',
+        operator: '==='
       })
     }
   })
@@ -336,18 +372,17 @@ describe('screen recording', function() {
     setTimeout(() => recording.stop(), recordingDuration)
     await recording.promise
     await checkVideoIntegrity(videoFile)
-    const videoDuration = await getVideoDuration(videoFile)
+    const videoMetaData = await getVideoMetaData(videoFile)
     const expectedDuration = recordingDuration / 1000
-    if (!(videoDuration >= expectedDuration)) {
+    if (!(videoMetaData.duration >= expectedDuration)) {
       throw new assert.AssertionError({
         message: 'Recording does not have the expected length.',
-        actual: videoDuration,
+        actual: videoMetaData.duration,
         expected: expectedDuration,
         operator: '>='
       })
     }
-    const rotateMetadata = await getRotateMetadata(videoFile)
     // Rotate metadata is always (360 - options.rotate):
-    assert.strictEqual(360 - 90, rotateMetadata)
+    assert.strictEqual(360 - 90, videoMetaData.rotate)
   })
 })

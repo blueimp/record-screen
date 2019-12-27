@@ -57,6 +57,7 @@ function buildURL(properties = {}) {
  * @param {string} [options.inputFormat] Input format
  * @param {string} [options.resolution] Display resolution (WIDTHxHEIGHT)
  * @param {number} [options.fps] Frames per second to record from input
+ * @param {string} [options.videoFilter] Video filters to apply
  * @param {string} [options.videoCodec] Video codec
  * @param {string} [options.pixelFormat] Output pixel format
  * @param {string} [options.hostname=localhost] Server hostname
@@ -92,6 +93,9 @@ function buildFFMPEGArgs(fileName, options = {}) {
       ? `${options.hostname || ''}:${options.display}`
       : buildURL(options)
   )
+  if (options.videoFilter) {
+    args.push('-vf', options.videoFilter)
+  }
   if (options.videoCodec) {
     args.push('-vcodec', options.videoCodec)
   }
@@ -120,6 +124,7 @@ function buildFFMPEGArgs(fileName, options = {}) {
  * @property {string} [inputFormat=x11grab] Input format
  * @property {string} [resolution] Display resolution (WIDTHxHEIGHT)
  * @property {number} [fps=15] Frames per second to record from input
+ * @property {string} [videoFilter] Video filters to apply
  * @property {string} [videoCodec] Video codec
  * @property {string} [pixelFormat=yuv420p] Output pixel format
  * @property {number} [rotate] Rotate metadata, set to 90 to rotate left by 90°
