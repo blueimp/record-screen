@@ -170,7 +170,6 @@ function recordScreen(fileName, options) {
     recProcess = execFile('ffmpeg', args, function(error, stdout, stderr) {
       recProcess = null
       // ffmpeg returns with status 255 when receiving SIGINT:
-      // @ts-ignore Error interface does not expose killed and code properties
       if (error && !(error.killed && error.code === 255)) return reject(error)
       return resolve({ stdout, stderr })
     })
