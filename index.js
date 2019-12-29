@@ -139,7 +139,7 @@ function buildFFMPEGArgs(fileName, options = {}) {
  */
 
 /**
- * Starts a screen recording via ffmpeg x11grab.
+ * Starts a screen recording via ffmpeg.
  *
  * @param {string} fileName Output file name
  * @param {Options} [options] Screen recording options
