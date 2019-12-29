@@ -2,6 +2,14 @@
 
 /* global describe, after, it */
 
+/**
+ * @typedef {object} MetaData Video stream meta data
+ * @property {number} duration Video duration
+ * @property {number} width Video width
+ * @property {number} height Video height
+ * @property {number} rotate Video rotation value
+ */
+
 const assert = require('assert')
 const fs = require('fs')
 const execFile = require('util').promisify(require('child_process').execFile)
@@ -24,14 +32,6 @@ function checkVideoIntegrity(videoFile) {
 }
 
 /**
- * @typedef {object} MetaData Video stream meta data
- * @property {number} duration Video duration
- * @property {string} width Video width
- * @property {string} height Video height
- * @property {number} rotate Video rotation value
- */
-
-/**
  * Checks the integrity of the given video file.
  *
  * @param {string} videoFile File path to the video file
@@ -48,11 +48,12 @@ async function getVideoMetaData(videoFile) {
     videoFile
   ])
   const parsedResult = JSON.parse(result.stdout)
+  const rotate = parsedResult.streams[0].tags.rotate
   return {
     duration: Number(parsedResult.format.duration),
     width: parsedResult.streams[0].width,
     height: parsedResult.streams[0].height,
-    rotate: Number(parsedResult.streams[0].tags.rotate)
+    rotate: rotate === undefined ? rotate : Number(rotate)
   }
 }
 
