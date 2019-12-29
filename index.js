@@ -11,6 +11,38 @@
 
 'use strict'
 
+/**
+ * @typedef {object} Result
+ * @property {string} stdout Screen recording standard output
+ * @property {string} stderr Screen recording error output
+ */
+
+/**
+ * @typedef {object} Recording
+ * @property {Promise<Result>} promise Promise for the active screen recording
+ * @property {Function} stop Function to stop the screen recording
+ */
+
+/**
+ * @typedef {object} Options Screen recording options
+ * @property {string} [loglevel=info] Log verbosity level
+ * @property {string} [inputFormat=x11grab] Input format
+ * @property {string} [resolution] Display resolution (WIDTHxHEIGHT)
+ * @property {number} [fps=15] Frames per second to record from input
+ * @property {string} [videoFilter] Video filters to apply
+ * @property {string} [videoCodec] Video codec
+ * @property {string} [pixelFormat=yuv420p] Output pixel format
+ * @property {number} [rotate] Rotate metadata, set to 90 to rotate left by 90°
+ * @property {string} [hostname=localhost] Server hostname
+ * @property {string} [display=0] X11 server display
+ * @property {string} [protocol=http] Server protocol
+ * @property {string} [username] Basic auth username
+ * @property {string} [password] Basic auth password
+ * @property {number} [port=9000] Server port
+ * @property {string} [pathname] URL path component
+ * @property {string} [search] URL query parameter
+ */
+
 const fs = require('fs')
 const util = require('util')
 const { execFile } = require('child_process')
@@ -105,38 +137,6 @@ function buildFFMPEGArgs(fileName, options = {}) {
   args.push(fileName)
   return args
 }
-
-/**
- * @typedef {object} Result
- * @property {string} stdout Screen recording standard output
- * @property {string} stderr Screen recording error output
- */
-
-/**
- * @typedef {object} Recording
- * @property {Promise<Result>} promise Promise for the active screen recording
- * @property {Function} stop Function to stop the screen recording
- */
-
-/**
- * @typedef {object} Options Screen recording options
- * @property {string} [loglevel=info] Log verbosity level
- * @property {string} [inputFormat=x11grab] Input format
- * @property {string} [resolution] Display resolution (WIDTHxHEIGHT)
- * @property {number} [fps=15] Frames per second to record from input
- * @property {string} [videoFilter] Video filters to apply
- * @property {string} [videoCodec] Video codec
- * @property {string} [pixelFormat=yuv420p] Output pixel format
- * @property {number} [rotate] Rotate metadata, set to 90 to rotate left by 90°
- * @property {string} [hostname=localhost] Server hostname
- * @property {string} [display=0] X11 server display
- * @property {string} [protocol=http] Server protocol
- * @property {string} [username] Basic auth username
- * @property {string} [password] Basic auth password
- * @property {number} [port=9000] Server port
- * @property {string} [pathname] URL path component
- * @property {string} [search] URL query parameter
- */
 
 /**
  * Starts a screen recording via ffmpeg.
