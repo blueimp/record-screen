@@ -52,10 +52,13 @@
     "pretest": "eslint . && tsc",
     "test": "docker-compose run --rm test",
     "posttest": "docker-compose down",
+    "build": "tsc -p tsconfig.d.json",
     "preversion": "npm test",
+    "version": "npm run build && git add -A index.d.ts",
     "postversion": "git push --tags origin HEAD && npm publish"
   },
   "files": [
+    "index.d.ts",
     "index.js"
   ],
   "main": "index.js"
