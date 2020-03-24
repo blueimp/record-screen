@@ -167,7 +167,7 @@ function recordScreen(fileName, options) {
    * @param {Function} reject Failure callback
    */
   function recordingExecutor(resolve, reject) {
-    recProcess = execFile('ffmpeg', args, function(error, stdout, stderr) {
+    recProcess = execFile('ffmpeg', args, function (error, stdout, stderr) {
       recProcess = null
       // ffmpeg returns with status 255 when receiving SIGINT:
       if (error && !(error.killed && error.code === 255)) return reject(error)
@@ -206,7 +206,7 @@ function recordScreen(fileName, options) {
       'rotate=' + options.rotate,
       tmpFileName
     ]
-    return execFilePromise('ffmpeg', args).then(function() {
+    return execFilePromise('ffmpeg', args).then(function () {
       fs.unlinkSync(fileName)
       fs.renameSync(tmpFileName, fileName)
       return result

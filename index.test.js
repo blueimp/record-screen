@@ -57,15 +57,15 @@ async function getVideoMetaData(videoFile) {
   }
 }
 
-describe('screen recording', function() {
+describe('screen recording', function () {
   this.timeout(mochaTimeout)
   this.slow(mochaSlow)
 
-  after(function() {
+  after(function () {
     fs.unlinkSync(videoFile)
   })
 
-  it('uses default options', async function() {
+  it('uses default options', async function () {
     const recording = recordScreen(videoFile)
     const cmd = await recording.promise.catch(error => error.cmd)
     assert.strictEqual(
@@ -74,7 +74,7 @@ describe('screen recording', function() {
     )
   })
 
-  it('handles option: loglevel', async function() {
+  it('handles option: loglevel', async function () {
     const recording = recordScreen(videoFile, {
       loglevel: 'quiet'
     })
@@ -94,7 +94,7 @@ describe('screen recording', function() {
     )
   })
 
-  it('handles option: inputFormat', async function() {
+  it('handles option: inputFormat', async function () {
     const recording = recordScreen(videoFile, {
       inputFormat: 'mjpeg'
     })
@@ -114,7 +114,7 @@ describe('screen recording', function() {
     )
   })
 
-  it('handles option: resolution', async function() {
+  it('handles option: resolution', async function () {
     const recording = recordScreen(videoFile, {
       resolution: '1440x900'
     })
@@ -127,7 +127,7 @@ describe('screen recording', function() {
     )
   })
 
-  it('handles option: fps', async function() {
+  it('handles option: fps', async function () {
     const recording = recordScreen(videoFile, {
       fps: 30
     })
@@ -146,7 +146,7 @@ describe('screen recording', function() {
     )
   })
 
-  it('handles option: videoCodec', async function() {
+  it('handles option: videoCodec', async function () {
     const recording = recordScreen(videoFile, {
       videoCodec: 'libx264'
     })
@@ -158,7 +158,7 @@ describe('screen recording', function() {
     )
   })
 
-  it('handles option: pixelFormat', async function() {
+  it('handles option: pixelFormat', async function () {
     const recording = recordScreen(videoFile, {
       pixelFormat: 'yuv444p'
     })
@@ -174,7 +174,7 @@ describe('screen recording', function() {
     assert.strictEqual(cmd2, 'ffmpeg -y -r 15 -f x11grab -i :0 ' + videoFile)
   })
 
-  it('handles option: hostname', async function() {
+  it('handles option: hostname', async function () {
     const recording = recordScreen(videoFile, {
       hostname: '127.0.0.1'
     })
@@ -185,7 +185,7 @@ describe('screen recording', function() {
     )
   })
 
-  it('handles option: display', async function() {
+  it('handles option: display', async function () {
     const recording = recordScreen(videoFile, {
       display: '0.0+100,100'
     })
@@ -196,7 +196,7 @@ describe('screen recording', function() {
     )
   })
 
-  it('handles option: protocol', async function() {
+  it('handles option: protocol', async function () {
     const recording = recordScreen(videoFile, {
       inputFormat: 'mjpeg',
       protocol: 'https'
@@ -209,7 +209,7 @@ describe('screen recording', function() {
     )
   })
 
-  it('handles option: port', async function() {
+  it('handles option: port', async function () {
     const recording = recordScreen(videoFile, {
       inputFormat: 'mjpeg',
       port: 8080
@@ -222,7 +222,7 @@ describe('screen recording', function() {
     )
   })
 
-  it('handles option: pathname', async function() {
+  it('handles option: pathname', async function () {
     const recording = recordScreen(videoFile, {
       inputFormat: 'mjpeg',
       pathname: '/mjpeg'
@@ -236,7 +236,7 @@ describe('screen recording', function() {
     )
   })
 
-  it('handles option: search', async function() {
+  it('handles option: search', async function () {
     const recording = recordScreen(videoFile, {
       inputFormat: 'mjpeg',
       search: 'key=val'
@@ -250,7 +250,7 @@ describe('screen recording', function() {
     )
   })
 
-  it('handles option: username', async function() {
+  it('handles option: username', async function () {
     const recording = recordScreen(videoFile, {
       inputFormat: 'mjpeg',
       username: 'user'
@@ -264,7 +264,7 @@ describe('screen recording', function() {
     )
   })
 
-  it('handles option: password', async function() {
+  it('handles option: password', async function () {
     const recording = recordScreen(videoFile, {
       inputFormat: 'mjpeg',
       username: 'user',
@@ -279,7 +279,7 @@ describe('screen recording', function() {
     )
   })
 
-  it('records screen: x11grab', async function() {
+  it('records screen: x11grab', async function () {
     // Touch the file name to check if the overwrite option works:
     fs.closeSync(fs.openSync(videoFile, 'w'))
     const options = {
@@ -311,7 +311,7 @@ describe('screen recording', function() {
     }
   })
 
-  it('records screen: mjpeg', async function() {
+  it('records screen: mjpeg', async function () {
     // Touch the file name to check if the overwrite option works:
     fs.closeSync(fs.openSync(videoFile, 'w'))
     const recording = recordScreen(videoFile, {
@@ -333,7 +333,7 @@ describe('screen recording', function() {
     }
   })
 
-  it('uses filter: crop', async function() {
+  it('uses filter: crop', async function () {
     const recording = recordScreen(videoFile, {
       hostname: process.env.X11_HOST,
       resolution: '1440x900',
@@ -364,7 +364,7 @@ describe('screen recording', function() {
     }
   })
 
-  it('sets metadata: rotate', async function() {
+  it('sets metadata: rotate', async function () {
     const recording = recordScreen(videoFile, {
       hostname: process.env.X11_HOST,
       resolution: '1440x900',
