@@ -1,6 +1,6 @@
 {
   "name": "record-screen",
-  "version": "3.15.0",
+  "version": "3.16.0",
   "title": "Record Screen",
   "description": "Screen recording function using ffmpeg.",
   "keywords": [
