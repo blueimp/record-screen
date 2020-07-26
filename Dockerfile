@@ -6,19 +6,19 @@ RUN apk --no-cache add git
 #   -w  disable DWARF generation
 RUN CGO_ENABLED=0 go get -ldflags='-s -w' github.com/blueimp/mjpeg-server
 
-FROM alpine:3.11
+FROM alpine:3.12
 COPY --from=build /go/bin/mjpeg-server /usr/local/bin/
 RUN apk --no-cache add \
-    nodejs \
-    npm \
-    ffmpeg \
+  nodejs \
+  npm \
+  ffmpeg \
   && npm install -g \
-    npm@latest \
-    mocha@7 \
+  npm@latest \
+  mocha@8 \
   # Clean up obsolete files:
   && rm -rf \
-    /tmp/* \
-    /root/.npm
+  /tmp/* \
+  /root/.npm
 USER nobody
 WORKDIR /opt
 COPY wait-for-hosts.sh /usr/local/bin/wait-for-hosts
