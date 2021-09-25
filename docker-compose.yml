@@ -2,13 +2,11 @@ version: '3.7'
 services:
   chromedriver:
     image: blueimp/chromedriver
-    init: true
     tmpfs: /tmp
     environment:
       - EXPOSE_X11=true
   mjpeg:
     build: .
-    init: true
     command: >
       mjpeg-server -- ffmpeg
         -loglevel fatal
@@ -26,7 +24,6 @@ services:
     read_only: true
   test:
     build: .
-    init: true
     command: mocha index.test.js
     read_only: true
     tmpfs: /tmp
@@ -35,7 +32,7 @@ services:
       - MJPEG_HOST=mjpeg
       - WAIT_FOR_HOSTS=chromedriver:6000 mjpeg:9000
     volumes:
-      - .:/opt:ro
+      - .:/app:ro
     depends_on:
       - chromedriver
       - mjpeg
