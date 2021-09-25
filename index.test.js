@@ -319,7 +319,7 @@ describe('screen recording', function () {
       hostname: process.env.MJPEG_HOST,
       inputFormat: 'mjpeg'
     })
-    setTimeout(() => recording.stop(), recordingDuration + 200)
+    setTimeout(() => recording.stop(), recordingDuration + 300)
     await recording.promise
     await checkVideoIntegrity(videoFile)
     const videoMetaData = await getVideoMetaData(videoFile)
